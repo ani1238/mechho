@@ -1,26 +1,57 @@
 @import "tailwindcss";
 
+/* ── Mechho Brand Tokens ─────────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand palette */
+  --mechho-blue:       #1a3a5c;   /* Bay of Bengal deep blue */
+  --mechho-blue-mid:   #2a5298;   /* medium blue */
+  --mechho-mustard:    #e8a020;   /* kasundi mustard */
+  --mechho-mustard-lt: #f5c84a;   /* light mustard */
+  --mechho-cream:      #fdf6e3;   /* warm cream */
+  --mechho-coral:      #e04f39;   /* accent / CTA */
+  --mechho-green:      #2d7a4f;   /* veg indicator */
+
+  /* Semantic */
+  --background: var(--mechho-cream);
+  --foreground: #1c1c1c;
+  --card-bg: #ffffff;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  /* Expose brand colours to Tailwind utilities */
+  --color-mechho-blue:       var(--mechho-blue);
+  --color-mechho-blue-mid:   var(--mechho-blue-mid);
+  --color-mechho-mustard:    var(--mechho-mustard);
+  --color-mechho-mustard-lt: var(--mechho-mustard-lt);
+  --color-mechho-cream:      var(--mechho-cream);
+  --color-mechho-coral:      var(--mechho-coral);
+  --color-mechho-green:      var(--mechho-green);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ── Base ────────────────────────────────────────────────────────────────── */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
+
+/* ── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--mechho-mustard); border-radius: 3px; }
+
+/* ── Animations ──────────────────────────────────────────────────────────── */
+@keyframes slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.animate-slide-up { animation: slide-up 0.4s ease both; }
+.animate-fade-in  { animation: fade-in  0.3s ease both; }
