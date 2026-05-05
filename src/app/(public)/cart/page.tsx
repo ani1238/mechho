@@ -12,7 +12,7 @@ import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '919000000000'
-const UPI_ID = 'mechho@upi'
+const UPI_ID = '8697695644-2@ybl'
 
 type DeliveryType = 'delivery' | 'pickup'
 type PaymentMethod = 'upi' | 'cod'

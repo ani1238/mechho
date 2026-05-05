@@ -6,18 +6,18 @@ const inter = Inter({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   title: {
-    default: "Mechho — Bengali Fish Home Kitchen | Kismatpur, Hyderabad",
-    template: "%s | Mechho Home Kitchen",
+    default: "Mechho — Bengali Fried Fish Brand | Kismatpur, Hyderabad",
+    template: "%s | Mechho",
   },
   description:
-    "Order fresh Bengali fish dishes — Crispy Fish Fingers, Fish Fry Rice Bowls, Buckets & more. Home delivery in Kismatpur, Hyderabad. Place pre-orders for parties and functions.",
-  keywords: ["Bengali fish", "home delivery", "Kismatpur", "Hyderabad", "fish fry", "fish rice bowl", "mechho"],
+    "Order fresh Bengali fried fish — Crispy Fish Fingers, Fish Fry Rice Bowls, Burgers, Buckets & more. Delivery in Kismatpur, Hyderabad. Pre-orders for parties and functions.",
+  keywords: ["Bengali fish", "fried fish", "Kismatpur", "Hyderabad", "fish fry", "fish rice bowl", "mechho"],
   openGraph: {
-    title: "Mechho — Bengali Fish Home Kitchen",
-    description: "Bengali fish, fast-food format. Home delivery in Kismatpur, Hyderabad.",
+    title: "Mechho — Bengali Fried Fish Brand",
+    description: "Bengali fish, fast-food format. Delivery in Kismatpur, Hyderabad.",
     type: "website",
     locale: "en_IN",
-    siteName: "Mechho Home Kitchen",
+    siteName: "Mechho",
   },
 };
 

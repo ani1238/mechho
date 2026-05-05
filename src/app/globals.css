@@ -3,11 +3,12 @@
 /* ── Mechho Brand Tokens ─────────────────────────────────────────────────── */
 :root {
   /* Brand palette */
-  --mechho-blue:       #1a3a5c;   /* Bay of Bengal deep blue */
+  --mechho-blue:       #1a3a5c;   /* Bay of Bengal deep blue (logo colour) */
   --mechho-blue-mid:   #2a5298;   /* medium blue */
-  --mechho-mustard:    #e8a020;   /* kasundi mustard */
-  --mechho-mustard-lt: #f5c84a;   /* light mustard */
-  --mechho-cream:      #fdf6e3;   /* warm cream */
+  --mechho-mustard:    #d4900a;   /* deep kasundi mustard — primary */
+  --mechho-mustard-lt: #f5b932;   /* bright mustard — hover / highlight */
+  --mechho-mustard-bg: #fef3d0;   /* very pale mustard — section bg */
+  --mechho-cream:      #fdf8f0;   /* warm cream */
   --mechho-coral:      #e04f39;   /* accent / CTA */
   --mechho-green:      #2d7a4f;   /* veg indicator */
 
@@ -26,6 +27,7 @@
   --color-mechho-blue-mid:   var(--mechho-blue-mid);
   --color-mechho-mustard:    var(--mechho-mustard);
   --color-mechho-mustard-lt: var(--mechho-mustard-lt);
+  --color-mechho-mustard-bg: var(--mechho-mustard-bg);
   --color-mechho-cream:      var(--mechho-cream);
   --color-mechho-coral:      var(--mechho-coral);
   --color-mechho-green:      var(--mechho-green);

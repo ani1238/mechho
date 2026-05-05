@@ -5,17 +5,17 @@ const PILLARS = [
   {
     emoji: '🐟',
     title: 'Authentic Bengali recipes',
-    desc: 'Passed down through generations — every dish carries the flavour of a Bengali home.',
-  },
-  {
-    emoji: '🏠',
-    title: 'Home kitchen quality',
-    desc: "We cook like you're family. No shortcuts, no preservatives — just honest, fresh cooking.",
+    desc: 'Passed down through generations — every dish carries the deep, bold flavour of authentic Bengali fish cooking.',
   },
   {
     emoji: '⚡',
-    title: 'Fast-food convenience',
-    desc: 'The speed and format of fast food, the soul of a Bengali kitchen. Best of both worlds.',
+    title: 'Fast-food format, no compromise',
+    desc: 'The speed and convenience of fast food, with the soul of Bengali cuisine. We never cut corners on flavour.',
+  },
+  {
+    emoji: '📈',
+    title: 'Built to scale',
+    desc: 'Starting in Kismatpur, Hyderabad — with eyes on multiple outlets across the city and beyond.',
   },
 ]
 
@@ -33,7 +33,7 @@ const PROMISES = [
   {
     emoji: '📜',
     title: 'FSSAI licensed',
-    desc: 'Licence No: — to be updated — | We are fully compliant with food safety regulations.',
+    desc: 'Reg. No: 23626028002059 · Valid till 01-Apr-2027 · Issued by FSSAI, Govt of Telangana.',
   },
 ]
 
@@ -50,17 +50,17 @@ export default function AboutPage() {
 
         <div className="relative max-w-4xl mx-auto px-6 py-20 text-center text-white">
           <span className="inline-block bg-mechho-mustard/20 border border-mechho-mustard/40 rounded-full px-4 py-1.5 text-mechho-mustard-lt text-sm font-medium mb-6">
-            Our Story 🏠
+            Our Story
           </span>
           <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight mb-5">
-            Born in a home kitchen,
+            Bengali fried fish,
             <br />
-            <span className="text-mechho-mustard">raised on Bengali recipes</span>
+            <span className="text-mechho-mustard">built into a brand.</span>
           </h1>
           <p className="text-lg text-white/75 max-w-2xl mx-auto leading-relaxed">
-            Mechho is a home kitchen in Kismatpur, Hyderabad — bringing the soulful flavours of
-            authentic Bengali fish cooking into a modern, fast-food format. Every dish is a love
-            letter to the rivers, the fish markets and the kitchens of Bengal.
+            Mechho started with a simple idea — take the bold, soulful flavours of authentic Bengali
+            fish cooking and bring them into a modern fast-food format. We are building the fried fish
+            brand that Bengal deserves — starting in Hyderabad, expanding everywhere.
           </p>
         </div>
 
@@ -116,16 +116,15 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── Meet the Kitchen ─────────────────────────────────────────────── */}
       <section className="max-w-4xl mx-auto px-4 py-16 text-center">
-        <h2 className="text-3xl font-extrabold text-mechho-blue mb-10">Meet the kitchen</h2>
+        <h2 className="text-3xl font-extrabold text-mechho-blue mb-10">Our first outlet</h2>
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-10 flex flex-col items-center gap-4">
-          <div className="w-28 h-28 rounded-full bg-gradient-to-br from-mechho-blue/10 to-mechho-mustard/20 flex items-center justify-center text-6xl border-4 border-mechho-mustard/30">
-            🧑‍🍳
+          <div className="w-28 h-28 rounded-full bg-gradient-to-br from-mechho-mustard/20 to-mechho-blue/10 flex items-center justify-center text-6xl border-4 border-mechho-mustard/30">
+            🐟
           </div>
-          <h3 className="font-extrabold text-mechho-blue text-xl">Mechho Home Kitchen</h3>
+          <h3 className="font-extrabold text-mechho-blue text-xl">Mechho — Outlet 01</h3>
           <p className="text-gray-500 max-w-sm text-sm leading-relaxed italic">
-            "Every dish is made with love in our Kismatpur home kitchen."
+            "We cook every dish fresh, to order. No freezer shortcuts — just bold Bengali flavours every time."
           </p>
           <p className="text-gray-400 text-xs">📍 Kismatpur, Hyderabad</p>
         </div>

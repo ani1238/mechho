@@ -13,13 +13,18 @@ export default async function AdminProtectedLayout({
 }: {
   children: React.ReactNode
 }) {
-  const supabase = await createClient()
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
+  const devBypass = process.env.NEXT_PUBLIC_DEV_BYPASS_AUTH === 'true'
 
-  if (!session) {
-    redirect('/admin/login')
+  if (!devBypass) {
+    const supabase = await createClient()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    const ADMIN_EMAILS = ['anisumi1238@gmail.com', 'malicktaniya221@gmail.com']
+    if (!user || !ADMIN_EMAILS.includes(user.email ?? '')) {
+      redirect('/admin/login')
+    }
   }
 
   return (

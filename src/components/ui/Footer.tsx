@@ -7,11 +7,11 @@ export default function Footer() {
         <div>
           <span className="text-mechho-mustard font-extrabold text-xl">🐟 Mechho</span>
           <p className="mt-2 text-sm">
-            Bengali fish — fast-food format. Home kitchen, big flavours.
+            Bengali fried fish — fast-food format. Bold flavours, honest cooking.
             Kismatpur, Hyderabad.
           </p>
           <p className="mt-2 text-xs text-white/40">
-            FSSAI Licence: <span className="text-white/60">— update here —</span>
+            FSSAI Reg: <span className="text-white/60">23626028002059</span>
           </p>
         </div>
 
@@ -51,7 +51,7 @@ export default function Footer() {
             <li>🕐 Mon–Sun · 11 AM – 10 PM</li>
           </ul>
           <p className="mt-4 text-xs text-white/40">
-            © {new Date().getFullYear()} Mechho Home Kitchen. All rights reserved.
+            © {new Date().getFullYear()} Mechho — Fish Fry Co. All rights reserved.
           </p>
         </div>
       </div>

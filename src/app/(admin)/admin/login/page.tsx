@@ -22,7 +22,7 @@ export default function AdminLoginPage() {
     const { error: authError } = await supabase.auth.signInWithOtp({
       email: email.trim(),
       options: {
-        emailRedirectTo: `${window.location.origin}/admin/orders`,
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/admin/orders`,
       },
     })
 
@@ -43,7 +43,7 @@ export default function AdminLoginPage() {
             <Fish className="text-mechho-blue" size={30} />
           </div>
           <h1 className="text-white text-2xl font-bold tracking-tight">Mechho Admin</h1>
-          <p className="text-white/50 text-sm mt-1">Bengali Fish Home Kitchen</p>
+          <p className="text-white/50 text-sm mt-1">Bengali Fried Fish Brand</p>
         </div>
 
         <div className="bg-white rounded-2xl p-8 shadow-2xl">
