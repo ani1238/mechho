@@ -16,6 +16,7 @@ import {
   LogOut,
   Fish,
   TrendingUp,
+  Tag,
 } from 'lucide-react'
 
 const NAV_LINKS = [
@@ -23,6 +24,7 @@ const NAV_LINKS = [
   { href: '/admin/preorders', label: 'Pre-orders', icon: Calendar },
   { href: '/admin/menu', label: 'Menu', icon: Utensils },
   { href: '/admin/analytics', label: 'Analytics', icon: TrendingUp },
+  { href: '/admin/promos', label: 'Promos', icon: Tag },
   { href: '/admin/survey', label: 'Survey Results', icon: BarChart2 },
   { href: '/admin/customers', label: 'Customers', icon: Users },
 ]

@@ -58,12 +58,42 @@ export default function CartPage() {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false)
   const [mounted, setMounted] = useState(false)
 
+  // Promo code state
+  const [promoInput, setPromoInput] = useState('')
+  const [promoApplied, setPromoApplied] = useState<{
+    code: string; type: 'flat' | 'percent'; value: number; discount: number
+  } | null>(null)
+  const [promoError, setPromoError] = useState('')
+  const [promoLoading, setPromoLoading] = useState(false)
+
   useEffect(() => setMounted(true), [])
 
   const cartSubtotal = subtotal()
   const deliveryFee =
     deliveryType === 'delivery' && pincodeData ? pincodeData.delivery_fee : 0
-  const total = cartSubtotal + deliveryFee
+  const promoDiscount = promoApplied?.discount ?? 0
+  const total = cartSubtotal + deliveryFee - promoDiscount
+
+  const applyPromo = async () => {
+    const code = promoInput.trim().toUpperCase()
+    if (!code) { setPromoError('Enter a promo code'); return }
+    setPromoLoading(true)
+    setPromoError('')
+    try {
+      const res = await fetch(`/api/promo?code=${code}&subtotal=${cartSubtotal}`)
+      const data = await res.json()
+      if (!res.ok) {
+        setPromoError(data.error ?? 'Invalid promo code')
+        setPromoApplied(null)
+      } else {
+        setPromoApplied(data)
+      }
+    } catch {
+      setPromoError('Could not apply promo. Try again.')
+    } finally {
+      setPromoLoading(false)
+    }
+  }
 
   const validatePincode = async () => {
     if (deliveryType !== 'delivery') return
@@ -129,6 +159,8 @@ export default function CartPage() {
           pincode: deliveryType === 'delivery' ? pincode.trim() : '',
           subtotal: cartSubtotal,
           delivery_fee: deliveryFee,
+          discount: promoDiscount,
+          promo_code: promoApplied?.code ?? null,
           total,
           payment_method: paymentMethod,
           payment_status: 'pending',
@@ -151,6 +183,15 @@ export default function CartPage() {
       )
       if (itemsError) throw itemsError
 
+      // Track promo usage
+      if (promoApplied) {
+        await fetch('/api/promo/use', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: promoApplied.code }),
+        })
+      }
+
       // Open WhatsApp with order summary in a new tab
       const waMessage = generateWhatsAppOrderMessage({
         id: order.id,
@@ -162,6 +203,9 @@ export default function CartPage() {
           qty: ci.qty,
           price: ci.item.price,
         })),
+        subtotal: cartSubtotal,
+        discount: promoDiscount,
+        promo_code: promoApplied?.code,
         total,
         address: deliveryType === 'delivery' ? address.trim() : undefined,
         payment_method: paymentMethod,
@@ -305,6 +349,43 @@ export default function CartPage() {
                       : '—'}
                   </span>
                 </div>
+
+                {/* Promo code */}
+                {promoApplied ? (
+                  <div className="flex justify-between text-green-600 font-medium">
+                    <span className="flex items-center gap-1">
+                      🎟️ {promoApplied.code}
+                      <button
+                        onClick={() => { setPromoApplied(null); setPromoInput(''); setPromoError('') }}
+                        className="ml-1 text-gray-400 hover:text-red-400 text-xs"
+                        aria-label="Remove promo"
+                      >✕</button>
+                    </span>
+                    <span>−{formatPrice(promoApplied.discount)}</span>
+                  </div>
+                ) : (
+                  <div className="pt-1">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="Promo code"
+                        value={promoInput}
+                        onChange={(e) => { setPromoInput(e.target.value.toUpperCase()); setPromoError('') }}
+                        onKeyDown={(e) => e.key === 'Enter' && applyPromo()}
+                        className="flex-1 px-3 py-1.5 rounded-xl border border-gray-300 text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-mechho-blue/40 transition"
+                      />
+                      <button
+                        onClick={applyPromo}
+                        disabled={promoLoading}
+                        className="px-3 py-1.5 bg-mechho-blue text-white rounded-xl text-sm font-semibold hover:opacity-90 disabled:opacity-50 transition"
+                      >
+                        {promoLoading ? '…' : 'Apply'}
+                      </button>
+                    </div>
+                    {promoError && <p className="text-xs text-red-500 mt-1">{promoError}</p>}
+                  </div>
+                )}
+
                 <div className="border-t pt-2 flex justify-between font-bold text-mechho-blue text-base">
                   <span>Total</span>
                   <span>{formatPrice(total)}</span>

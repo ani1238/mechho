@@ -15,6 +15,9 @@ export function generateWhatsAppOrderMessage(order: {
   phone: string
   type: string
   items: { name: string; qty: number; price: number }[]
+  subtotal?: number
+  discount?: number
+  promo_code?: string
   total: number
   address?: string
   payment_method: string
@@ -24,12 +27,18 @@ export function generateWhatsAppOrderMessage(order: {
     .map((i) => `  • ${i.qty}x ${i.name} — ₹${i.price * i.qty}`)
     .join('\n')
 
+  const promoLine =
+    order.discount && order.discount > 0
+      ? `🎟️ Promo (${order.promo_code ?? ''}): −₹${order.discount}\n`
+      : ''
+
   return encodeURIComponent(
     `🐟 *New Mechho Order* #${order.id.slice(-6).toUpperCase()}\n\n` +
     `👤 ${order.customer_name} | 📞 ${order.phone}\n` +
     `📦 ${order.type === 'delivery' ? 'Delivery' : order.type === 'pickup' ? 'Pickup' : 'Pre-order'}\n` +
     (order.address ? `📍 ${order.address}\n` : '') +
     `\n${itemLines}\n\n` +
+    promoLine +
     `💰 Total: ₹${order.total} | ${order.payment_method.toUpperCase()}\n` +
     (order.notes ? `📝 Notes: ${order.notes}\n` : '') +
     `\nReply to confirm! 🙏`

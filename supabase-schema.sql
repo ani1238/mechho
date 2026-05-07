@@ -174,3 +174,27 @@ create table if not exists page_views (
 alter table page_views enable row level security;
 create policy "Public insert page_views" on page_views for insert with check (true);
 create policy "Admin read page_views"   on page_views for select using (auth.role() = 'authenticated');
+
+-- ── Promo codes ─────────────────────────────────────────────────────────────
+
+create table if not exists promo_codes (
+  id          uuid primary key default gen_random_uuid(),
+  created_at  timestamptz not null default now(),
+  code        text not null unique,
+  type        text not null check (type in ('flat', 'percent')),
+  value       numeric(10,2) not null check (value > 0),
+  min_order   numeric(10,2) not null default 0,
+  max_uses    int,
+  used_count  int not null default 0,
+  expires_at  timestamptz,
+  is_active   boolean not null default true
+);
+
+alter table promo_codes enable row level security;
+create policy "Public read promo codes"   on promo_codes for select using (true);
+create policy "Admin manage promo codes"  on promo_codes for all using (auth.role() = 'authenticated');
+
+-- Add discount + promo_code columns to orders
+alter table orders add column if not exists promo_code text;
+alter table orders add column if not exists discount   numeric(10,2) not null default 0;
+
