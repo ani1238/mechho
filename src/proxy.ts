@@ -7,6 +7,11 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next({ request })
   }
 
+  // Let auth callback through — it sets the session cookie
+  if (request.nextUrl.pathname.startsWith('/auth/callback')) {
+    return NextResponse.next({ request })
+  }
+
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -54,6 +59,6 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin/:path*', '/auth/callback'],
 }
 
