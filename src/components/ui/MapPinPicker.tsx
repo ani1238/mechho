@@ -136,7 +136,7 @@ export default function MapPinPicker({ onConfirm, onClose }: Props) {
     >
       <div
         className="bg-white w-full sm:max-w-lg sm:rounded-2xl overflow-hidden flex flex-col shadow-2xl"
-        style={{ maxHeight: '92dvh' }}
+        style={{ height: 'min(92dvh, 580px)' }}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b flex-shrink-0">
@@ -192,7 +192,7 @@ export default function MapPinPicker({ onConfirm, onClose }: Props) {
             </div>
 
             {/* Map */}
-            <div className="flex-1 min-h-0" style={{ height: 280 }}>
+            <div style={{ height: '280px', flexShrink: 0 }}>
               <GoogleMap
                 mapContainerStyle={{ width: '100%', height: '100%' }}
                 center={mapCenter}
