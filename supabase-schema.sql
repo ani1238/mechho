@@ -148,3 +148,29 @@ insert into items (category_id, name, price, is_veg, is_bestseller, tags) values
   ('cat-combos','Adda Combo - Choice of Rice Bowl / Burger',399,false,false,'{combo}'),
   ('cat-combos','Bari Combo - Choice of Rice Bowl/Burger',799,false,false,'{combo,family}'),
   ('cat-combos','Mechho Feast Combo - Large Order',1099,false,true,'{combo,party,feast}');
+
+-- ── Analytics tables ────────────────────────────────────────────────────────
+
+create table if not exists cart_events (
+  id         uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  session_id text not null,
+  item_id    uuid references items(id) on delete set null,
+  item_name  text not null,
+  price      numeric(10,2) not null default 0
+);
+
+alter table cart_events enable row level security;
+create policy "Public insert cart_events" on cart_events for insert with check (true);
+create policy "Admin read cart_events"   on cart_events for select using (auth.role() = 'authenticated');
+
+create table if not exists page_views (
+  id         uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  session_id text not null,
+  page       text not null
+);
+
+alter table page_views enable row level security;
+create policy "Public insert page_views" on page_views for insert with check (true);
+create policy "Admin read page_views"   on page_views for select using (auth.role() = 'authenticated');

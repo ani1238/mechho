@@ -1,9 +1,10 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useCartStore } from '@/store/cart'
 import { formatPrice } from '@/lib/utils'
+import { getSessionId } from '@/lib/session'
 import type { Category, MenuItem } from '@/types'
 import ItemCard from '@/components/menu/ItemCard'
 
@@ -28,6 +29,26 @@ export default function MenuClient({
   const { addItem, totalItems, subtotal } = useCartStore()
   const cartCount = totalItems()
   const cartSubtotal = subtotal()
+
+  const handleAdd = useCallback(
+    (item: MenuItem) => {
+      addItem(item)
+      const sid = getSessionId()
+      if (!sid) return
+      fetch('/api/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'cart_add',
+          session_id: sid,
+          item_id: item.id,
+          item_name: item.name,
+          price: item.price,
+        }),
+      }).catch(() => {})
+    },
+    [addItem]
+  )
 
   const filteredItems = useMemo(
     () =>
@@ -95,7 +116,7 @@ export default function MenuClient({
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredItems.map((item) => (
-              <ItemCard key={item.id} item={item} onAdd={addItem} />
+              <ItemCard key={item.id} item={item} onAdd={handleAdd} />
             ))}
           </div>
         )}
