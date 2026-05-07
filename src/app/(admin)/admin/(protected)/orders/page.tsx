@@ -17,6 +17,9 @@ import {
   TrendingUp,
   AlertCircle,
   DollarSign,
+  Copy,
+  ShieldCheck,
+  ShieldX,
 } from 'lucide-react'
 
 // ─── Local types ──────────────────────────────────────────────────────────────
@@ -174,13 +177,23 @@ function StatCard({
 function OrderCard({
   order,
   onStatusChange,
+  onPaymentVerify,
   updating,
 }: {
   order: OrderWithItems
   onStatusChange: (id: string, s: OrderStatus) => void
+  onPaymentVerify: (id: string, status: 'paid' | 'failed') => void
   updating: string | null
 }) {
   const busy = updating === order.id
+  const [copied, setCopied] = useState(false)
+
+  const copyUtr = () => {
+    if (!order.upi_ref) return
+    navigator.clipboard.writeText(order.upi_ref)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   const waMsg = generateWhatsAppOrderMessage({
     id: order.id,
@@ -262,13 +275,90 @@ function OrderCard({
       {/* Total + payment */}
       <div className="flex items-center justify-between">
         <span className="text-lg font-bold text-gray-900">{formatPrice(order.total)}</span>
-        <span className="text-xs text-gray-400 font-medium">
-          {order.payment_method.toUpperCase()}
-          {order.upi_ref && (
-            <span className="ml-1 font-mono text-gray-300">· {order.upi_ref.slice(-8)}</span>
+        <div className="flex items-center gap-2">
+          {/* Payment status badge */}
+          {order.payment_method === 'upi' && (
+            <span className={cn(
+              'text-xs px-2 py-0.5 rounded-full font-medium border',
+              order.payment_status === 'paid'
+                ? 'bg-green-50 text-green-700 border-green-200'
+                : order.payment_status === 'failed'
+                ? 'bg-red-50 text-red-600 border-red-200'
+                : 'bg-yellow-50 text-yellow-700 border-yellow-200',
+            )}>
+              {order.payment_status === 'paid' ? '✓ Paid' : order.payment_status === 'failed' ? '✗ Failed' : '⏳ Unverified'}
+            </span>
           )}
-        </span>
+          <span className="text-xs text-gray-400 font-medium">
+            {order.payment_method.toUpperCase()}
+          </span>
+        </div>
       </div>
+
+      {/* UPI UTR verification row */}
+      {order.payment_method === 'upi' && order.upi_ref && (
+        <div className={cn(
+          'rounded-xl p-3 space-y-2',
+          order.payment_status === 'paid'
+            ? 'bg-green-50 border border-green-100'
+            : order.payment_status === 'failed'
+            ? 'bg-red-50 border border-red-100'
+            : 'bg-amber-50 border border-amber-100'
+        )}>
+          <div className="flex items-center justify-between gap-2">
+            <div className="min-w-0">
+              <p className="text-xs text-gray-500 font-medium">UTR / Transaction ID</p>
+              <p className="font-mono text-sm font-bold text-gray-900 tracking-wide break-all">
+                {order.upi_ref}
+              </p>
+            </div>
+            <button
+              onClick={copyUtr}
+              className="flex-shrink-0 p-1.5 rounded-lg hover:bg-white/70 text-gray-500 transition"
+              title="Copy UTR"
+            >
+              {copied ? <Check size={14} className="text-green-600" /> : <Copy size={14} />}
+            </button>
+          </div>
+
+          {order.payment_status === 'pending' && (
+            <div className="flex gap-2 pt-1">
+              <button
+                onClick={() => onPaymentVerify(order.id, 'paid')}
+                disabled={busy}
+                className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-green-600 text-white text-xs font-semibold hover:bg-green-700 disabled:opacity-50 transition"
+              >
+                <ShieldCheck size={13} /> Mark Paid
+              </button>
+              <button
+                onClick={() => onPaymentVerify(order.id, 'failed')}
+                disabled={busy}
+                className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-red-100 text-red-700 text-xs font-semibold hover:bg-red-200 disabled:opacity-50 transition border border-red-200"
+              >
+                <ShieldX size={13} /> Mark Failed
+              </button>
+            </div>
+          )}
+          {order.payment_status === 'paid' && (
+            <p className="text-xs text-green-700 font-medium flex items-center gap-1">
+              <ShieldCheck size={12} /> Payment verified manually
+            </p>
+          )}
+          {order.payment_status === 'failed' && (
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-red-600 font-medium flex items-center gap-1">
+                <ShieldX size={12} /> Marked as failed
+              </p>
+              <button
+                onClick={() => onPaymentVerify(order.id, 'paid')}
+                className="text-xs text-green-700 underline hover:no-underline"
+              >
+                Undo → Mark Paid
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Actions + WhatsApp */}
       <div className="flex items-center gap-1.5 flex-wrap pt-1 border-t border-gray-100">
@@ -386,6 +476,20 @@ export default function OrdersPage() {
       // Revert
       fetchOrders()
     }
+    setUpdating(null)
+  }
+
+  const handlePaymentVerify = async (orderId: string, paymentStatus: 'paid' | 'failed') => {
+    setUpdating(orderId)
+    setOrders((prev) =>
+      prev.map((o) => (o.id === orderId ? { ...o, payment_status: paymentStatus } : o))
+    )
+    const { error: err } = await supabase
+      .from('orders')
+      .update({ payment_status: paymentStatus })
+      .eq('id', orderId)
+
+    if (err) fetchOrders()
     setUpdating(null)
   }
 
@@ -524,6 +628,7 @@ export default function OrdersPage() {
               key={order.id}
               order={order}
               onStatusChange={handleStatusChange}
+              onPaymentVerify={handlePaymentVerify}
               updating={updating}
             />
           ))}
