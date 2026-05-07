@@ -1,15 +1,19 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Minus, Plus, Trash2 } from 'lucide-react'
+import { Minus, Plus, Trash2, MapPin } from 'lucide-react'
 import { useCartStore } from '@/store/cart'
 import { createClient } from '@/lib/supabase/client'
 import { formatPrice, generateWhatsAppOrderMessage } from '@/lib/utils'
 import type { ServicePincode } from '@/types'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
+import type { MapLocationResult } from '@/components/ui/MapPinPicker'
+
+const MapPinPicker = dynamic(() => import('@/components/ui/MapPinPicker'), { ssr: false })
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '919000000000'
 const UPI_ID = '8697695644-2@ybl'
@@ -65,6 +69,21 @@ export default function CartPage() {
   } | null>(null)
   const [promoError, setPromoError] = useState('')
   const [promoLoading, setPromoLoading] = useState(false)
+
+  // Map pin picker
+  const [showMapPicker, setShowMapPicker] = useState(false)
+
+  const handleMapConfirm = (result: MapLocationResult) => {
+    setAddress(result.address)
+    setShowMapPicker(false)
+    if (result.pincode) {
+      setPincode(result.pincode)
+      setPincodeData(null)
+      setPincodeError('')
+      // Trigger pincode validation after state settles
+      setTimeout(() => validatePincode(), 100)
+    }
+  }
 
   useEffect(() => setMounted(true), [])
 
@@ -250,6 +269,7 @@ export default function CartPage() {
   }
 
   return (
+    <>
     <div className="min-h-screen bg-mechho-cream py-8 px-4">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-2xl font-bold text-mechho-blue mb-6">🛒 Your Cart</h1>
@@ -473,9 +493,19 @@ export default function CartPage() {
               />
               {deliveryType === 'delivery' && (
                 <div className="flex flex-col gap-1">
-                  <label htmlFor="address" className="text-sm font-medium text-gray-700">
-                    Delivery Address
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label htmlFor="address" className="text-sm font-medium text-gray-700">
+                      Delivery Address
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setShowMapPicker(true)}
+                      className="flex items-center gap-1 text-xs text-mechho-blue font-semibold hover:underline"
+                    >
+                      <MapPin size={12} />
+                      Pick on map
+                    </button>
+                  </div>
                   <textarea
                     id="address"
                     rows={3}
@@ -588,5 +618,14 @@ export default function CartPage() {
         </div>
       </div>
     </div>
+
+    {/* Map pin picker modal */}
+    {showMapPicker && (
+      <MapPinPicker
+        onConfirm={handleMapConfirm}
+        onClose={() => setShowMapPicker(false)}
+      />
+    )}
+  </>
   )
 }
